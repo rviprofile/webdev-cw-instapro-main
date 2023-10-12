@@ -20,7 +20,7 @@ export let user = getUserFromLocalStorage();
 export let page = null;
 export let posts = [];
 // window.localStorage.clear()
-const getToken = () => {
+export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
   return token;
 };
@@ -132,18 +132,3 @@ const renderApp = () => {
 
 goToPage(POSTS_PAGE);
 
-
-function testGet() {
-  fetch ("https://wedev-api.sky.pro/api/v1/vladimir-rychkov/instapro", {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer 78c0b8c8as5k5c5c5c6g78c0b8c8as6g37k3cc3bo3ck3b4",
-    },
-  })
-  .then((response) => {
-    return response.json()
-  })
-  .then((responce) => {
-    console.log(responce);
-  })
-}

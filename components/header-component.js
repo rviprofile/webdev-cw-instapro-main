@@ -1,7 +1,10 @@
 import { goToPage, logout, user } from "../index.js";
 import { ADD_POSTS_PAGE, AUTH_PAGE, POSTS_PAGE } from "../routes.js";
+import { getUserFromLocalStorage } from "../helpers.js";
 
 export function renderHeaderComponent({ element }) {
+  const user = window.localStorage.getItem("user");
+  // console.log(user);
   element.innerHTML = `
   <div class="page-header">
       <h1 class="logo">instapro</h1>

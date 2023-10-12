@@ -4,7 +4,7 @@ const personalKey = "prod";
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
-
+import { getToken } from "./index.js";
 
 export function getPosts({ token }) {
   return fetch(postsHost, {
@@ -72,4 +72,37 @@ export function uploadImage({ file }) {
   }).then((response) => {
     return response.json();
   });
+}
+
+export function likeListener(posts) {
+    const likeElements = document.querySelectorAll(".like-button");
+  
+    for (let like of likeElements) {
+      like.addEventListener("click", (event) => {
+
+        console.log(`${like.dataset.postid}`);
+        console.log(getToken());
+
+        fetch(`${postsHost}/${like.dataset.postid}/like`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        })
+        .then((response) => {
+          // Если статус ответа не 401, переводим ответ из формата json
+          if (response.status === 401) {
+            throw new Error("Для этого нужна авторизация");
+          } else {
+            return response.json();
+          }
+        })
+        .then(() => {
+          goToPage(POSTS_PAGE);
+        })
+        .catch((Error) => {
+          alert(Error);
+        });
+      })
+    }
 }

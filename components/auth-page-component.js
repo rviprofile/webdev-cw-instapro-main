@@ -1,6 +1,9 @@
 import { loginUser, registerUser } from "../api.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { renderUploadImageComponent } from "./upload-image-component.js";
+import { saveUserToLocalStorage } from "../helpers.js";
+import { goToPage } from "../index.js";
+import { POSTS_PAGE } from "../routes.js";
 
 export function renderAuthPageComponent({ appEl, setUser }) {
   let isLoginMode = true;
@@ -99,7 +102,14 @@ export function renderAuthPageComponent({ appEl, setUser }) {
           password: password,
         })
           .then((user) => {
-            setUser(user.user);
+            saveUserToLocalStorage(user);
+            return
+          })
+          .then(() => {
+            goToPage(POSTS_PAGE);
+            renderHeaderComponent({
+              element: document.querySelector(".header-container"),
+            });
           })
           .catch((error) => {
             console.warn(error);
