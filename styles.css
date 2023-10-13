@@ -93,6 +93,10 @@
   cursor: pointer;
 }
 
+.active-like {
+  
+}
+
 .user-name {
   font-weight: 500;
 }

@@ -12,6 +12,14 @@ export function renderPostsPageComponent({ appEl }) {
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
 
+const isActive = (post) => {
+    if (post.isLiked === true) {
+        return `like-active.svg`
+    } else {
+      return `like-not-active.svg`
+    }
+}
+
 const ulPosts = posts.map((post, index) => {
   return `
                   <li class="post">
@@ -23,8 +31,8 @@ const ulPosts = posts.map((post, index) => {
                       <img class="post-image" src="${post.imageUrl}">
                     </div>
                     <div class="post-likes">
-                      <button data-postid="${post.id}" class="like-button">
-                        <img src="./assets/images/like-active.svg">
+                      <button data-postid="${post.id}" data-activelike="${post.isLiked}" class="like-button">
+                        <img src="./assets/images/${isActive(post)}">
                       </button>
                       <p class="post-likes-text">
                         Нравится: <strong>${post.likes.length}</strong>
@@ -40,7 +48,7 @@ const ulPosts = posts.map((post, index) => {
                   </li>
   `
 }).join("");
-  // console.log(post.likes.length);
+
   const appHtml = `
                 <div class="page-container">
                   <div class="header-container"></div>

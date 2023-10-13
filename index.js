@@ -22,7 +22,6 @@ export let posts = [];
 // window.localStorage.clear()
 export const getToken = () => {
   const token = user ? `Bearer ${user.user.token}` : undefined;
-  console.log(user);
   return token;
 };
 

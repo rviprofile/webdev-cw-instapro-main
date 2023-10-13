@@ -80,29 +80,49 @@ export function likeListener(posts) {
     for (let like of likeElements) {
       like.addEventListener("click", (event) => {
 
-        console.log(`${like.dataset.postid}`);
-        console.log(getToken());
-
-        fetch(`${postsHost}/${like.dataset.postid}/like`, {
-          method: "POST",
-          headers: {
-            Authorization: getToken(),
-          },
-        })
-        .then((response) => {
-          // Если статус ответа не 401, переводим ответ из формата json
-          if (response.status === 401) {
-            throw new Error("Для этого нужна авторизация");
-          } else {
-            return response.json();
-          }
-        })
-        .then(() => {
-            goToPage(POSTS_PAGE);
-        })
-        .catch((Error) => {
-          alert(Error);
-        });
+        if (like.dataset.activelike === 'true') {
+          fetch(`${postsHost}/${like.dataset.postid}/dislike`, {
+            method: "POST",
+            headers: {
+              Authorization: getToken(),
+            },
+          })
+          .then((response) => {
+            // Если статус ответа не 401, переводим ответ из формата json
+            if (response.status === 401) {
+              throw new Error("Для этого нужна авторизация");
+            } else {
+              return response.json();
+            }
+          })
+          .then(() => {
+              goToPage(POSTS_PAGE);
+          })
+          .catch((Error) => {
+            alert(Error);
+          });
+        } else {
+          fetch(`${postsHost}/${like.dataset.postid}/like`, {
+            method: "POST",
+            headers: {
+              Authorization: getToken(),
+            },
+          })
+          .then((response) => {
+            // Если статус ответа не 401, переводим ответ из формата json
+            if (response.status === 401) {
+              throw new Error("Для этого нужна авторизация");
+            } else {
+              return response.json();
+            }
+          })
+          .then(() => {
+              goToPage(POSTS_PAGE);
+          })
+          .catch((Error) => {
+            alert(Error);
+          });
+        }
       })
     }
 }
