@@ -21,7 +21,8 @@ export let page = null;
 export let posts = [];
 // window.localStorage.clear()
 export const getToken = () => {
-  const token = user ? `Bearer ${user.token}` : undefined;
+  const token = user ? `Bearer ${user.user.token}` : undefined;
+  console.log(user);
   return token;
 };
 
@@ -131,4 +132,3 @@ const renderApp = () => {
 };
 
 goToPage(POSTS_PAGE);
-

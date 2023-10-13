@@ -40,7 +40,7 @@ const ulPosts = posts.map((post, index) => {
                   </li>
   `
 }).join("");
-
+  // console.log(post.likes.length);
   const appHtml = `
                 <div class="page-container">
                   <div class="header-container"></div>

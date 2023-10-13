@@ -1,8 +1,9 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
 const personalKey = "prod";
-const baseHost = "https://webdev-hw-api.vercel.app";
+const baseHost = "https://wedev-api.sky.pro";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
+
 
 import { getToken } from "./index.js";
 
@@ -56,9 +57,6 @@ export function loginUser({ login, password }) {
     }
     return response.json();
   })
-  .then((response) => {
-    console.log(response);
-  });
 }
 
 // Загружает картинку в облако, возвращает url загруженной картинки
@@ -74,6 +72,8 @@ export function uploadImage({ file }) {
   });
 }
 
+import { goToPage } from "./index.js";
+import { POSTS_PAGE } from "./routes.js";
 export function likeListener(posts) {
     const likeElements = document.querySelectorAll(".like-button");
   
@@ -86,7 +86,7 @@ export function likeListener(posts) {
         fetch(`${postsHost}/${like.dataset.postid}/like`, {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${getToken()}`,
+            Authorization: getToken(),
           },
         })
         .then((response) => {
@@ -98,7 +98,7 @@ export function likeListener(posts) {
           }
         })
         .then(() => {
-          goToPage(POSTS_PAGE);
+            goToPage(POSTS_PAGE);
         })
         .catch((Error) => {
           alert(Error);
