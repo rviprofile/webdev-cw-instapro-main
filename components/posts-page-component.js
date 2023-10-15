@@ -1,7 +1,6 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
-import { getPosts } from "../api.js";
 import { likeListener } from "../api.js";
 
 export function renderPostsPageComponent({ appEl }) {
@@ -20,9 +19,18 @@ const isActive = (post) => {
     }
 }
 
+const whoLikes = (post) => {
+  if (post.likes.length === 1) {
+    return `${post.likes[0].name}`
+  }
+  return post.likes.length > 0 ? 
+  `${post.likes[0].name} и еще ${post.likes.length - 1}` :
+   '0';
+}
+
 const ulPosts = posts.map((post, index) => {
   return `
-                  <li class="post">
+                  <li class="post" id="${post.id}">
                     <div class="post-header" data-user-id="${post.user.id}">
                         <img src="${post.user.imageUrl}" class="post-header__user-image">
                         <p class="post-header__user-name">${post.user.name}</p>
@@ -35,7 +43,7 @@ const ulPosts = posts.map((post, index) => {
                         <img src="./assets/images/${isActive(post)}">
                       </button>
                       <p class="post-likes-text">
-                        Нравится: <strong>${post.likes.length}</strong>
+                        Нравится: <strong>${whoLikes(post)}</strong>
                       </p>
                     </div>
                     <p class="post-text">

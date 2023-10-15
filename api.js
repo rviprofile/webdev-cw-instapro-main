@@ -1,11 +1,12 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
-const personalKey = "prod";
+// const personalKey = "prod";
+const personalKey = "vladimir-rychkov";
 const baseHost = "https://wedev-api.sky.pro";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
 
-import { getToken } from "./index.js";
+import { getToken, goToPage, page } from "./index.js";
 
 export function getPosts({ token }) {
   return fetch(postsHost, {
@@ -68,17 +69,19 @@ export function uploadImage({ file }) {
     method: "POST",
     body: data,
   }).then((response) => {
+    // console.log(response.json());
     return response.json();
   });
 }
 
-import { goToPage } from "./index.js";
 import { POSTS_PAGE } from "./routes.js";
 export function likeListener(posts) {
     const likeElements = document.querySelectorAll(".like-button");
+    const appEl = document.getElementById("app");
   
     for (let like of likeElements) {
       like.addEventListener("click", (event) => {
+        let postid = like.dataset.postid;
 
         if (like.dataset.activelike === 'true') {
           fetch(`${postsHost}/${like.dataset.postid}/dislike`, {
@@ -96,7 +99,9 @@ export function likeListener(posts) {
             }
           })
           .then(() => {
-              goToPage(POSTS_PAGE);
+            // Нужен рендер страницы без перезагрузки
+            goToPage(POSTS_PAGE);
+            console.log('рендер страницы без перезагрузки');
           })
           .catch((Error) => {
             alert(Error);
@@ -117,7 +122,9 @@ export function likeListener(posts) {
             }
           })
           .then(() => {
-              goToPage(POSTS_PAGE);
+            // Нужен рендер страницы без перезагрузки
+            goToPage(POSTS_PAGE);
+            console.log('рендер страницы без перезагрузки');
           })
           .catch((Error) => {
             alert(Error);
@@ -125,4 +132,20 @@ export function likeListener(posts) {
         }
       })
     }
+}
+
+export function addNewPost({description, imageUrl}) {
+  return fetch(postsHost, {
+    method: "POST",
+    headers: {
+      Authorization: getToken(),
+    },
+    body: JSON.stringify({
+      description: description,
+      imageUrl: imageUrl,
+    })
+  })
+    .then((response) => {
+      console.log(response);
+    })
 }
