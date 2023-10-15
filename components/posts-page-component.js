@@ -1,7 +1,23 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
-import { likeListener } from "../api.js";
+import { posts, goToPage, likeListener } from "../index.js";
+
+export function isActive (post) {
+  if (post.isLiked === true) {
+      return `like-active.svg`
+  } else {
+    return `like-not-active.svg`
+  }
+}
+
+export function whoLikes (post) {
+  if (post.likes.length === 1) {
+    return `${post.likes[0].name}`
+  }
+  return post.likes.length > 0 ? 
+  `${post.likes[0].name} и еще ${post.likes.length - 1}` :
+   '0';
+}
 
 export function renderPostsPageComponent({ appEl }) {
 
@@ -10,23 +26,6 @@ export function renderPostsPageComponent({ appEl }) {
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
-
-const isActive = (post) => {
-    if (post.isLiked === true) {
-        return `like-active.svg`
-    } else {
-      return `like-not-active.svg`
-    }
-}
-
-const whoLikes = (post) => {
-  if (post.likes.length === 1) {
-    return `${post.likes[0].name}`
-  }
-  return post.likes.length > 0 ? 
-  `${post.likes[0].name} и еще ${post.likes.length - 1}` :
-   '0';
-}
 
 const ulPosts = posts.map((post, index) => {
   return `
@@ -66,7 +65,7 @@ const ulPosts = posts.map((post, index) => {
     `
   appEl.innerHTML = appHtml;
 
-  likeListener(posts);
+  likeListener();
 
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
@@ -79,6 +78,4 @@ const ulPosts = posts.map((post, index) => {
       });
     });
   }
-
-
 }

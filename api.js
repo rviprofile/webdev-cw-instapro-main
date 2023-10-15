@@ -5,8 +5,9 @@ const personalKey = "vladimir-rychkov";
 const baseHost = "https://wedev-api.sky.pro";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
+import { getToken } from "./index.js";
 
-import { getToken, goToPage, page } from "./index.js";
+
 
 export function getPosts({ token }) {
   return fetch(postsHost, {
@@ -74,64 +75,38 @@ export function uploadImage({ file }) {
   });
 }
 
-import { POSTS_PAGE } from "./routes.js";
-export function likeListener(posts) {
-    const likeElements = document.querySelectorAll(".like-button");
-    const appEl = document.getElementById("app");
-  
-    for (let like of likeElements) {
-      like.addEventListener("click", (event) => {
-        let postid = like.dataset.postid;
-
-        if (like.dataset.activelike === 'true') {
-          fetch(`${postsHost}/${like.dataset.postid}/dislike`, {
-            method: "POST",
-            headers: {
-              Authorization: getToken(),
-            },
-          })
-          .then((response) => {
-            // Если статус ответа не 401, переводим ответ из формата json
-            if (response.status === 401) {
-              throw new Error("Для этого нужна авторизация");
-            } else {
-              return response.json();
-            }
-          })
-          .then(() => {
-            // Нужен рендер страницы без перезагрузки
-            goToPage(POSTS_PAGE);
-            console.log('рендер страницы без перезагрузки');
-          })
-          .catch((Error) => {
-            alert(Error);
-          });
-        } else {
-          fetch(`${postsHost}/${like.dataset.postid}/like`, {
-            method: "POST",
-            headers: {
-              Authorization: getToken(),
-            },
-          })
-          .then((response) => {
-            // Если статус ответа не 401, переводим ответ из формата json
-            if (response.status === 401) {
-              throw new Error("Для этого нужна авторизация");
-            } else {
-              return response.json();
-            }
-          })
-          .then(() => {
-            // Нужен рендер страницы без перезагрузки
-            goToPage(POSTS_PAGE);
-            console.log('рендер страницы без перезагрузки');
-          })
-          .catch((Error) => {
-            alert(Error);
-          });
-        }
-      })
+ export function fetchDisLike(postid) {
+  return fetch(`${postsHost}/${postid}/dislike`, {
+    method: "POST",
+    headers: {
+      Authorization: getToken(),
+    },
+  })
+  .then((response) => {
+    // Если статус ответа не 401, переводим ответ из формата json
+    if (response.status === 401) {
+      throw new Error("Для этого нужна авторизация");
+    } else {
+      return response.json();
     }
+  })
+}
+
+export function fetchLike(postid) {
+  return fetch(`${postsHost}/${postid}/like`, {
+    method: "POST",
+    headers: {
+      Authorization: getToken(),
+    },
+  })
+  .then((response) => {
+    // Если статус ответа не 401, переводим ответ из формата json
+    if (response.status === 401) {
+      throw new Error("Для этого нужна авторизация");
+    } else {
+      return response.json();
+    }
+  })
 }
 
 export function addNewPost({description, imageUrl}) {
