@@ -103,7 +103,7 @@ export function renderAuthPageComponent({ appEl, setUser }) {
         })
           .then((user) => {
             saveUserToLocalStorage(user);
-            return
+            return 
           })
           .then(() => {
             goToPage(POSTS_PAGE);

@@ -1,10 +1,9 @@
-import { goToPage, logout, user} from "../index.js";
-import { ADD_POSTS_PAGE, AUTH_PAGE, POSTS_PAGE } from "../routes.js";
+import { goToPage, logout} from "../index.js";
+import { ADD_POSTS_PAGE, AUTH_PAGE, POSTS_PAGE } from "../routes.js";4
+import { getUserFromLocalStorage } from "../helpers.js";
 
 export function renderHeaderComponent({ element }) {
-
-  console.log(user);
-
+  let user = getUserFromLocalStorage();
   element.innerHTML = `
   <div class="page-header">
       <h1 class="logo">instapro</h1>
