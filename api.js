@@ -5,9 +5,8 @@ const personalKey = "vladimir-rychkov";
 const baseHost = "https://wedev-api.sky.pro";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
+import { getUserFromLocalStorage } from "./helpers.js";
 import { getToken } from "./index.js";
-
-
 
 export function getPosts({ token }) {
   return fetch(postsHost, {
@@ -17,10 +16,21 @@ export function getPosts({ token }) {
     },
   })
     .then((response) => {
-      if (response.status === 401) {
-        throw new Error("Нет авторизации");
-      }
+      return response.json();
+    })
+    .then((data) => {
+      return data.posts;
+    });
+}
 
+export function getPostsUser({token, id}) {
+  return fetch(`${postsHost}/user-posts/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
       return response.json();
     })
     .then((data) => {
@@ -75,6 +85,7 @@ export function uploadImage({ file }) {
   });
 }
 
+// Отправляет запрос в /dislike
  export function fetchDisLike(postid) {
   return fetch(`${postsHost}/${postid}/dislike`, {
     method: "POST",
@@ -92,6 +103,7 @@ export function uploadImage({ file }) {
   })
 }
 
+// Отправляет запрос в /like
 export function fetchLike(postid) {
   return fetch(`${postsHost}/${postid}/like`, {
     method: "POST",
@@ -109,6 +121,7 @@ export function fetchLike(postid) {
   })
 }
 
+// Отправляет новый пост
 export function addNewPost({description, imageUrl}) {
   return fetch(postsHost, {
     method: "POST",

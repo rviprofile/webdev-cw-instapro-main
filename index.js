@@ -1,4 +1,4 @@
-import { addNewPost, getPosts, uploadImage, fetchLike, fetchDisLike} from "./api.js";
+import { addNewPost, getPosts, uploadImage, fetchLike, fetchDisLike, getPostsUser} from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -8,7 +8,7 @@ import {
   POSTS_PAGE,
   USER_POSTS_PAGE,
 } from "./routes.js";
-import { renderPostsPageComponent } from "./components/posts-page-component.js";
+import { idUserHelper, renderPostsPageComponent } from "./components/posts-page-component.js";
 import { renderLoadingPageComponent } from "./components/loading-page-component.js";
 import {
   getUserFromLocalStorage,
@@ -72,7 +72,7 @@ export const goToPage = (newPage, data) => {
       page = LOADING_PAGE;
       console.log("Открываю страницу пользователя: ", data.userId);
 
-      return getPosts({ token: getToken() })
+      return getPostsUser({ token: getToken(), id: data.userId })
       .then((newPosts) => {
         page = USER_POSTS_PAGE;
         posts = newPosts;
@@ -83,6 +83,7 @@ export const goToPage = (newPage, data) => {
         console.error(error);
         goToPage(POSTS_PAGE);
       });
+
     }
 
     page = newPage;
@@ -137,42 +138,66 @@ export const renderApp = (data) => {
   if (page === USER_POSTS_PAGE) {
     return renderUserPageComponent({
       appEl, 
-      data
+      posts
     });
   }
 };
 
 export function likeListener() {
+  // Находим лайки
   const likeElements = document.querySelectorAll(".like-button");
-  const appEl = document.getElementById("app");
+  // На каждый лайк 
   for (let like of likeElements) {
+    // Вешаем слушатель клика
     like.addEventListener("click", (event) => {
-
+      // Если лайк уже поставлен
       if (like.dataset.activelike === 'true') {
-        
+        // Делаем запрос к /dislike
         fetchDisLike(like.dataset.postid)
         .then(() => {
-          // Нужен рендер страницы без перезагрузкип
-          getPosts({ token: getToken() })
-          .then((newPosts) => {
-            // page = POSTS_PAGE;
-            posts = newPosts;
-            renderApp();
-          })
-          })
+          // Если страница была POSTS_PAGE
+          if (page === POSTS_PAGE) {
+            // То обновляем страницу постов
+            getPosts({ token: getToken() })
+            .then((newPosts) => {
+              posts = newPosts;
+              renderApp();
+            })
+          // А если страница была USER_POSTS_PAGE
+          } else {
+            // То обновляем страницу пользователя
+            getPostsUser({token: getToken(), id: idUserHelper})
+            .then((newPosts) => {
+              posts = newPosts;
+              renderApp();
+            })
+          }
+      })
       .catch((error) => {
         console.error(error);
       })
+      // Если лайк еще не был поставлен
       } else {
+        // Отправляем запрос к /like
         fetchLike(like.dataset.postid)
         .then(() => {
-          // Нужен рендер страницы без перезагрузки
-          getPosts({ token: getToken() })
-          .then((newPosts) => {
-            // page = POSTS_PAGE;
-            posts = newPosts;
-            renderApp();
-          })
+          // Если страница была POSTS_PAGE
+          if (page === POSTS_PAGE) {
+            // То обновляем страницу постов
+            getPosts({ token: getToken() })
+            .then((newPosts) => {
+              posts = newPosts;
+              renderApp();
+            })
+          // А если страница была USER_POSTS_PAGE
+          } else {
+            // То обновляем страницу пользователя 
+            getPostsUser({token: getToken(), id: idUserHelper})
+            .then((newPosts) => {
+              posts = newPosts;
+              renderApp();
+            })
+          }
         })
         .catch((Error) => {
           alert(Error);

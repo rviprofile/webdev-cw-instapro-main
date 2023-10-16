@@ -5,6 +5,7 @@ import { getUserFromLocalStorage } from "../helpers.js";
 export function renderHeaderComponent({ element }) {
   let user = getUserFromLocalStorage();
   element.innerHTML = `
+  <a name="HighOfPage"></a>
   <div class="page-header">
       <h1 class="logo">instapro</h1>
       <button class="header-button add-or-login-button">

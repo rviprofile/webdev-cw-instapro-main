@@ -19,6 +19,8 @@ export function whoLikes (post) {
    '0';
 }
 
+export let idUserHelper = ''
+
 export function renderPostsPageComponent({ appEl }) {
 
   console.log("Актуальный список постов:", posts);
@@ -62,6 +64,9 @@ const ulPosts = posts.map((post, index) => {
                   <ul class="posts">
                   ${ulPosts}
                 </div>
+                <a href="#HighOfPage" class="button upper" style="text-align: center;
+                text-decoration: none;
+                margin: 30px;">Наверх</a>
     `
   appEl.innerHTML = appHtml;
 
@@ -73,6 +78,7 @@ const ulPosts = posts.map((post, index) => {
 
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
+      idUserHelper = userEl.dataset.userId
       goToPage(USER_POSTS_PAGE, {
         userId: userEl.dataset.userId,
       });

@@ -3,14 +3,8 @@ import { renderHeaderComponent } from "./header-component.js";
 import { posts, likeListener } from "../index.js";
 import { isActive, whoLikes } from "./posts-page-component.js";
 
-export function renderUserPageComponent({ appEl, data }) {
-
-    const userPosts = posts.filter((post) => post.user.id === data);
-    const userImage = userPosts[0].user.imageUrl;
-    const userName = userPosts[0].user.name;
-    const userLogin = userPosts[0].user.login;
-
-    const ulPosts = userPosts.map((post, index) => {
+export function renderUserPageComponent({ appEl }) {
+    const userPosts = posts.map((post, index) => {
         return `
                         <li class="post" id="${post.id}">
                           <div class="post-image-container">
@@ -39,14 +33,17 @@ export function renderUserPageComponent({ appEl, data }) {
     <div class="page-container">
       <div class="header-container"></div>
       <div class="posts-user-header">
-                    <img src="${userImage}" class="posts-user-header__user-image">
-                    <p class="posts-user-header__user-name">${userName}</p>
+                    <img src="${posts[0].user.imageUrl}" class="posts-user-header__user-image">
+                    <p class="posts-user-header__user-name">${posts[0].user.name}</p>
         </div>
-        <p style="padding-bottom: 15px">@ ${userLogin}</p>
-        <p style="padding-bottom: 15px">Всего фотографий: ${userPosts.length}</p>
+        <p style="padding-bottom: 15px">@ ${posts[0].user.login}</p>
+        <p style="padding-bottom: 15px">Всего фотографий: ${posts.length}</p>
       <ul class="posts">
-      ${ulPosts}
+      ${userPosts}
     </div>
+    <a href="#HighOfPage" class="button upper" style="text-align: center;
+    text-decoration: none;
+    margin: 30px;">Наверх</a>
 `
 appEl.innerHTML = appHtml;
 
