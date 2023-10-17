@@ -5,7 +5,6 @@ const personalKey = "vladimir-rychkov";
 const baseHost = "https://wedev-api.sky.pro";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
-import { getUserFromLocalStorage } from "./helpers.js";
 import { getToken } from "./index.js";
 
 export function getPosts({ token }) {
@@ -135,7 +134,4 @@ export function addNewPost({description, imageUrl}) {
       imageUrl: imageUrl,
     })
   })
-    .then((response) => {
-      console.log(response);
-    })
 }

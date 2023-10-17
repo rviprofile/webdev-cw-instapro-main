@@ -38,7 +38,7 @@ export const getToken = () => {
   const token = user ? `Bearer ${user.user.token}` : undefined;
   return token;
 };
-console.log(getToken());
+
 export const logout = () => {
   user = null;
   removeUserFromLocalStorage();
@@ -80,9 +80,9 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === USER_POSTS_PAGE) {
-      // TODO: реализовать получение постов юзера из API
       page = LOADING_PAGE;
       console.log('Открываю страницу пользователя: ', data.userId);
+      window.scrollTo(0, 0);
 
       return getPostsUser({ token: getToken(), id: data.userId })
         .then((newPosts) => {
@@ -152,13 +152,33 @@ export const renderApp = (data) => {
       posts,
     });
   }
-  window.scrollTo(0, 0);
 };
 
 export function likeListener() {
   setNewUser();
-  // Находим лайки
+  // Находим лайки и фотографии
   const likeElements = document.querySelectorAll('.like-button');
+  const photoElements = document.querySelectorAll('.post-image');
+
+  // Функция проверяет, какую страницу нужно заново отрисовать после лайка
+  const whereAmI = () => {
+    // Если страница была POSTS_PAGE
+    if (page === POSTS_PAGE) {
+      // То обновляем страницу постов
+      getPosts({ token: getToken() }).then((newPosts) => {
+        posts = newPosts;
+        renderApp();
+      });
+      // А если страница была USER_POSTS_PAGE
+    } else {
+      // То обновляем страницу пользователя
+      getPostsUser({ token: getToken(), id: idUserHelper }).then((newPosts) => {
+        posts = newPosts;
+        renderApp();
+      });
+    }
+  };
+  
   // На каждый лайк
   for (let like of likeElements) {
     // Вешаем слушатель клика
@@ -168,23 +188,8 @@ export function likeListener() {
         // Делаем запрос к /dislike
         fetchDisLike(like.dataset.postid)
           .then(() => {
-            // Если страница была POSTS_PAGE
-            if (page === POSTS_PAGE) {
-              // То обновляем страницу постов
-              getPosts({ token: getToken() }).then((newPosts) => {
-                posts = newPosts;
-                renderApp();
-              });
-              // А если страница была USER_POSTS_PAGE
-            } else {
-              // То обновляем страницу пользователя
-              getPostsUser({ token: getToken(), id: idUserHelper }).then(
-                (newPosts) => {
-                  posts = newPosts;
-                  renderApp();
-                },
-              );
-            }
+            // Обновляем страницу
+            whereAmI();
           })
           .catch((error) => {
             console.error(error);
@@ -194,23 +199,8 @@ export function likeListener() {
         // Отправляем запрос к /like
         fetchLike(like.dataset.postid)
           .then(() => {
-            // Если страница была POSTS_PAGE
-            if (page === POSTS_PAGE) {
-              // То обновляем страницу постов
-              getPosts({ token: getToken() }).then((newPosts) => {
-                posts = newPosts;
-                renderApp();
-              });
-              // А если страница была USER_POSTS_PAGE
-            } else {
-              // То обновляем страницу пользователя
-              getPostsUser({ token: getToken(), id: idUserHelper }).then(
-                (newPosts) => {
-                  posts = newPosts;
-                  renderApp();
-                },
-              );
-            }
+            // Обновляем страницу
+            whereAmI();
           })
           .catch((Error) => {
             alert(Error);

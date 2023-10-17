@@ -1,10 +1,12 @@
 
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, likeListener } from "../index.js";
-import { isActive, whoLikes } from "./posts-page-component.js";
+import { isActive, mentionUsers, whoLikes, findMentionUsers, postsHelper } from "./posts-page-component.js";
+import { formatDistanceToNow, parseISO } from 'date-fns';
+import { ru } from "date-fns/locale";
 
 export function renderUserPageComponent({ appEl }) {
-    const userPosts = posts.map((post, index) => {
+    const userPosts = posts.map((post) => {
         return `
                         <li class="post" id="${post.id}">
                           <div class="post-image-container">
@@ -20,10 +22,10 @@ export function renderUserPageComponent({ appEl }) {
                           </div>
                           <p class="post-text">
                             <span class="user-name">${post.user.name}</span>
-                            ${post.description}
+                            ${findMentionUsers(post.description)}
                           </p>
                           <p class="post-date">
-                            19 минут назад
+                          ${formatDistanceToNow(parseISO(post.createdAt), {locale: ru})} назад
                           </p>
                         </li>
         `
@@ -48,6 +50,7 @@ export function renderUserPageComponent({ appEl }) {
 appEl.innerHTML = appHtml;
 
 likeListener();
+mentionUsers(postsHelper);
 
 renderHeaderComponent({
     element: document.querySelector(".header-container"),
