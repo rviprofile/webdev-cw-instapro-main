@@ -95,8 +95,8 @@
   cursor: pointer;
 }
 
-.active-like {
-  
+.mention {
+  cursor: pointer;
 }
 
 .user-name {
