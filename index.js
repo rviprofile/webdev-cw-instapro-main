@@ -1,21 +1,31 @@
-import { addNewPost, getPosts, uploadImage, fetchLike, fetchDisLike, getPostsUser} from "./api.js";
-import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
-import { renderAuthPageComponent } from "./components/auth-page-component.js";
+import {
+  addNewPost,
+  getPosts,
+  uploadImage,
+  fetchLike,
+  fetchDisLike,
+  getPostsUser,
+} from './api.js';
+import { renderAddPostPageComponent } from './components/add-post-page-component.js';
+import { renderAuthPageComponent } from './components/auth-page-component.js';
 import {
   ADD_POSTS_PAGE,
   AUTH_PAGE,
   LOADING_PAGE,
   POSTS_PAGE,
   USER_POSTS_PAGE,
-} from "./routes.js";
-import { idUserHelper, renderPostsPageComponent } from "./components/posts-page-component.js";
-import { renderLoadingPageComponent } from "./components/loading-page-component.js";
+} from './routes.js';
+import {
+  idUserHelper,
+  renderPostsPageComponent,
+} from './components/posts-page-component.js';
+import { renderLoadingPageComponent } from './components/loading-page-component.js';
 import {
   getUserFromLocalStorage,
   removeUserFromLocalStorage,
   saveUserToLocalStorage,
-} from "./helpers.js";
-import { renderUserPageComponent } from "./components/user-page-component.js";
+} from './helpers.js';
+import { renderUserPageComponent } from './components/user-page-component.js';
 
 export let user = getUserFromLocalStorage();
 export function setNewUser() {
@@ -49,7 +59,7 @@ export const goToPage = (newPage, data) => {
     ].includes(newPage)
   ) {
     if (newPage === ADD_POSTS_PAGE) {
-      page = ADD_POSTS_PAGE
+      page = ADD_POSTS_PAGE;
       return renderApp();
     }
 
@@ -72,20 +82,19 @@ export const goToPage = (newPage, data) => {
     if (newPage === USER_POSTS_PAGE) {
       // TODO: реализовать получение постов юзера из API
       page = LOADING_PAGE;
-      console.log("Открываю страницу пользователя: ", data.userId);
+      console.log('Открываю страницу пользователя: ', data.userId);
 
       return getPostsUser({ token: getToken(), id: data.userId })
-      .then((newPosts) => {
-        page = USER_POSTS_PAGE;
-        posts = newPosts;
-        let id = data.userId
-        renderApp(id);
-      })
-      .catch((error) => {
-        console.error(error);
-        goToPage(POSTS_PAGE);
-      });
-
+        .then((newPosts) => {
+          page = USER_POSTS_PAGE;
+          posts = newPosts;
+          let id = data.userId;
+          renderApp(id);
+        })
+        .catch((error) => {
+          console.error(error);
+          goToPage(POSTS_PAGE);
+        });
     }
 
     page = newPage;
@@ -94,11 +103,11 @@ export const goToPage = (newPage, data) => {
     return;
   }
 
-  throw new Error("страницы не существует");
+  throw new Error('страницы не существует');
 };
 
 export const renderApp = (data) => {
-  const appEl = document.getElementById("app");
+  const appEl = document.getElementById('app');
   if (page === LOADING_PAGE) {
     return renderLoadingPageComponent({
       appEl,
@@ -124,8 +133,8 @@ export const renderApp = (data) => {
     return renderAddPostPageComponent({
       appEl,
       onAddPostClick({ description, imageUrl }) {
-        console.log("Добавляю пост...", { description, imageUrl });
-        addNewPost({description, imageUrl})
+        console.log('Добавляю пост...', { description, imageUrl });
+        addNewPost({ description, imageUrl });
         goToPage(POSTS_PAGE);
       },
     });
@@ -139,75 +148,75 @@ export const renderApp = (data) => {
 
   if (page === USER_POSTS_PAGE) {
     return renderUserPageComponent({
-      appEl, 
-      posts
+      appEl,
+      posts,
     });
   }
-      window.scrollTo(0, 0);
+  window.scrollTo(0, 0);
 };
 
 export function likeListener() {
   setNewUser();
   // Находим лайки
-  const likeElements = document.querySelectorAll(".like-button");
-  // На каждый лайк 
+  const likeElements = document.querySelectorAll('.like-button');
+  // На каждый лайк
   for (let like of likeElements) {
     // Вешаем слушатель клика
-    like.addEventListener("click", (event) => {
+    like.addEventListener('click', (event) => {
       // Если лайк уже поставлен
       if (like.dataset.activelike === 'true') {
         // Делаем запрос к /dislike
         fetchDisLike(like.dataset.postid)
-        .then(() => {
-          // Если страница была POSTS_PAGE
-          if (page === POSTS_PAGE) {
-            // То обновляем страницу постов
-            getPosts({ token: getToken() })
-            .then((newPosts) => {
-              posts = newPosts;
-              renderApp();
-            })
-          // А если страница была USER_POSTS_PAGE
-          } else {
-            // То обновляем страницу пользователя
-            getPostsUser({token: getToken(), id: idUserHelper})
-            .then((newPosts) => {
-              posts = newPosts;
-              renderApp();
-            })
-          }
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      // Если лайк еще не был поставлен
+          .then(() => {
+            // Если страница была POSTS_PAGE
+            if (page === POSTS_PAGE) {
+              // То обновляем страницу постов
+              getPosts({ token: getToken() }).then((newPosts) => {
+                posts = newPosts;
+                renderApp();
+              });
+              // А если страница была USER_POSTS_PAGE
+            } else {
+              // То обновляем страницу пользователя
+              getPostsUser({ token: getToken(), id: idUserHelper }).then(
+                (newPosts) => {
+                  posts = newPosts;
+                  renderApp();
+                },
+              );
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+        // Если лайк еще не был поставлен
       } else {
         // Отправляем запрос к /like
         fetchLike(like.dataset.postid)
-        .then(() => {
-          // Если страница была POSTS_PAGE
-          if (page === POSTS_PAGE) {
-            // То обновляем страницу постов
-            getPosts({ token: getToken() })
-            .then((newPosts) => {
-              posts = newPosts;
-              renderApp();
-            })
-          // А если страница была USER_POSTS_PAGE
-          } else {
-            // То обновляем страницу пользователя 
-            getPostsUser({token: getToken(), id: idUserHelper})
-            .then((newPosts) => {
-              posts = newPosts;
-              renderApp();
-            })
-          }
-        })
-        .catch((Error) => {
-          alert(Error);
-        });
+          .then(() => {
+            // Если страница была POSTS_PAGE
+            if (page === POSTS_PAGE) {
+              // То обновляем страницу постов
+              getPosts({ token: getToken() }).then((newPosts) => {
+                posts = newPosts;
+                renderApp();
+              });
+              // А если страница была USER_POSTS_PAGE
+            } else {
+              // То обновляем страницу пользователя
+              getPostsUser({ token: getToken(), id: idUserHelper }).then(
+                (newPosts) => {
+                  posts = newPosts;
+                  renderApp();
+                },
+              );
+            }
+          })
+          .catch((Error) => {
+            alert(Error);
+          });
       }
-    })
+    });
   }
 }
 

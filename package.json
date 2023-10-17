@@ -4,12 +4,14 @@
   "description": "MVP аналога популярной соц. сети для обмена фотографиями",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack --mode development --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "date-fns": "^2.30.0"
+  "devDependencies": {
+    "date-fns": "^2.30.0",
+    "prettier": "^3.0.3",
+    "webpack-cli": "^5.1.4"
   }
 }
