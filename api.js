@@ -108,7 +108,9 @@ export function fetchLike(postid) {
   return fetch(`${postsHost}/${postid}/like`, {
     method: "POST",
     headers: {
-      Authorization: getToken(),
+      Authorization: 
+      // `Bearer ${token}`,
+      getToken()
     },
   })
   .then((response) => {

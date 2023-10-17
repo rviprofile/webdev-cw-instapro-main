@@ -23,11 +23,11 @@ export function renderHeaderComponent({ element }) {
   </div>
   
 `;
-
+      
   element
     .querySelector(".add-or-login-button")
     .addEventListener("click", () => {
-      if (user) {
+      if (user != null) {
         goToPage(ADD_POSTS_PAGE);
       } else {
         goToPage(AUTH_PAGE);

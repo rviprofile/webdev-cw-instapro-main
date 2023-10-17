@@ -18,6 +18,9 @@ import {
 import { renderUserPageComponent } from "./components/user-page-component.js";
 
 export let user = getUserFromLocalStorage();
+export function setNewUser() {
+  user = getUserFromLocalStorage();
+}
 export let page = null;
 export let posts = [];
 
@@ -25,7 +28,7 @@ export const getToken = () => {
   const token = user ? `Bearer ${user.user.token}` : undefined;
   return token;
 };
-
+console.log(getToken());
 export const logout = () => {
   user = null;
   removeUserFromLocalStorage();
@@ -47,7 +50,6 @@ export const goToPage = (newPage, data) => {
   ) {
     if (newPage === ADD_POSTS_PAGE) {
       page = ADD_POSTS_PAGE
-      // page = user ? ADD_POSTS_PAGE : AUTH_PAGE;
       return renderApp();
     }
 
@@ -145,6 +147,7 @@ export const renderApp = (data) => {
 };
 
 export function likeListener() {
+  setNewUser();
   // Находим лайки
   const likeElements = document.querySelectorAll(".like-button");
   // На каждый лайк 

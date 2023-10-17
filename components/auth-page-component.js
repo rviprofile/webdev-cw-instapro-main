@@ -2,7 +2,7 @@ import { loginUser, registerUser } from "../api.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { renderUploadImageComponent } from "./upload-image-component.js";
 import { saveUserToLocalStorage } from "../helpers.js";
-import { goToPage } from "../index.js";
+import { goToPage, user, setNewUser } from "../index.js";
 import { POSTS_PAGE } from "../routes.js";
 
 export function renderAuthPageComponent({ appEl, setUser }) {
@@ -107,6 +107,7 @@ export function renderAuthPageComponent({ appEl, setUser }) {
           })
           .then(() => {
             goToPage(POSTS_PAGE);
+            user;
             renderHeaderComponent({
               element: document.querySelector(".header-container"),
             });
@@ -116,8 +117,16 @@ export function renderAuthPageComponent({ appEl, setUser }) {
             setError(error.message);
           });
       } else {
-        const login = document.getElementById("login-input").value;
-        const name = document.getElementById("name-input").value;
+        const login = document.getElementById("login-input").value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");;
+        const name = document.getElementById("name-input").value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");;
         const password = document.getElementById("password-input").value;
         if (!name) {
           alert("Введите имя");
@@ -145,7 +154,13 @@ export function renderAuthPageComponent({ appEl, setUser }) {
           imageUrl,
         })
           .then((user) => {
-            setUser(user.user);
+            saveUserToLocalStorage(user);
+          })
+          .then(() => {
+            goToPage(POSTS_PAGE);
+            renderHeaderComponent({
+              element: document.querySelector(".header-container"),
+            });
           })
           .catch((error) => {
             console.warn(error);

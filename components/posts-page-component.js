@@ -1,6 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, likeListener } from "../index.js";
+import { posts, goToPage, likeListener , getToken, user} from "../index.js";
+// import { formatDistanceToNow } from "date-fns";
 
 export function isActive (post) {
   if (post.isLiked === true) {
@@ -28,7 +29,7 @@ export function renderPostsPageComponent({ appEl }) {
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
-
+  
 const ulPosts = posts.map((post, index) => {
   return `
                   <li class="post" id="${post.id}">
@@ -52,7 +53,7 @@ const ulPosts = posts.map((post, index) => {
                       ${post.description}
                     </p>
                     <p class="post-date">
-                      19 минут назад
+                    ${post.createdAt}
                     </p>
                   </li>
   `

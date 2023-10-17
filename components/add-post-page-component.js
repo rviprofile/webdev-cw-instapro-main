@@ -1,14 +1,15 @@
 import { renderUploadImageComponent
  } from "./upload-image-component.js";
  import { renderHeaderComponent } from "./header-component.js";
+import { goToPage } from "../index.js";
+import { POSTS_PAGE } from "../routes.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
-  let isLoginMode = true;
+
   let imageUrl = "";
   
   const render = () => {
 
-    // TODO: Реализовать страницу добавления поста
     const appHtml = `
     <div class="page-container">
     <div class="header-container"></div>
@@ -54,9 +55,14 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
-        description: document.querySelector(".input").value,
+        description: document.querySelector(".input").value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;"),
         imageUrl: imageUrl,
       });
+      goToPage(POSTS_PAGE)
     });
   };
 
